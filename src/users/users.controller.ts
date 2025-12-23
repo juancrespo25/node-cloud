@@ -16,21 +16,27 @@ export class UsersController {
 
   @Post()
   @UsePipes(new ValidationPipe({ whitelist: true }))
-  create(@Body() createUserDto: CreateUserDto) {
-    const userId = this.usersService.create(createUserDto);
+  async create(@Body() createUserDto: CreateUserDto) {
+    const userCode = await this.usersService.create(createUserDto);
     return {
       success: true,
-      user_id: userId,
+      message: 'User created successfully',
+      user_code: userCode,
     };
   }
 
   @Get()
-  findAll() {
-    return this.usersService.findAll();
+  async findAll() {
+    const users = await this.usersService.findAll();
+    return {
+      success: true,
+      messages: 'Users found successfully',
+      users,
+    };
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
+  @Get(':code')
+  async findByCode(@Param('code') code: string) {
+    return await this.usersService.findByCode(code);
   }
 }
