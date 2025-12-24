@@ -1,15 +1,20 @@
-import { IsEmail, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
 
 export class CreateUserDto {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   @IsString()
+  @MinLength(3)
   name: string;
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   @IsString()
+  @MinLength(3)
   last_name: string;
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   @IsEmail()
+  @IsNotEmpty()
   email: string;
+
+  @IsString()
+  @MinLength(6)
+  @IsNotEmpty()
+  password: string;
 }
