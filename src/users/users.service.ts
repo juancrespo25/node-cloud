@@ -3,6 +3,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from './schemas/user.schema';
+import bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -13,7 +14,8 @@ export class UsersService {
       const user = new this.usersModel({
         ...createUserDto,
         code: this.generateCode('USER'),
-        created_user: 'admin@jcv.com',
+        password: await this.hashPassword(createUserDto.password),
+        created_user: 'admin@jcv.com', //TODO Agregar logica para la creacion del usuario.
       });
 
       const result = await user.save();
@@ -44,7 +46,15 @@ export class UsersService {
     }
   }
 
+  //TODO Desacoplar logica de los metodos private
   private generateCode(prefix: string): string {
-    return `${prefix}-${Math.random().toString(36).substr(2, 8)}`;
+    return `${prefix}-${Math.floor(100000 + Math.random() * 900000).toString()}`;
+  }
+
+  private async hashPassword(password: string): Promise<string> {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+    const salt = await bcrypt.genSalt();
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+    return bcrypt.hash(password, salt);
   }
 }

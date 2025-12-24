@@ -18,6 +18,7 @@ export class UsersController {
   @UsePipes(new ValidationPipe({ whitelist: true }))
   async create(@Body() createUserDto: CreateUserDto) {
     const userCode = await this.usersService.create(createUserDto);
+    //TODO agregar roles
     return {
       success: true,
       message: 'User created successfully',
@@ -25,6 +26,7 @@ export class UsersController {
     };
   }
 
+  //TODO Agregar paginacion
   @Get()
   async findAll() {
     const users = await this.usersService.findAll();

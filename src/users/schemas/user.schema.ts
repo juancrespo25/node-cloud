@@ -1,10 +1,19 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { v4 as uuidv4 } from 'uuid';
 
 export type UserDocument = User & Document;
 
-@Schema()
+@Schema({ versionKey: false })
 export class User {
+  @Prop({
+    type: String,
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    default: uuidv4,
+    select: false,
+  })
+  _id: string;
+
   @Prop()
   name: string;
 
@@ -14,7 +23,7 @@ export class User {
   @Prop({ required: true, unique: true })
   email: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, select: false })
   password: string;
 
   @Prop({ unique: true })
