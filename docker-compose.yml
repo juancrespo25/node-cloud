@@ -4,3 +4,12 @@ services:
     container_name: jcv-mongodb
     ports:
       - "27017:27017"
+  postgres:
+    image: postgres:latest
+    container_name: jcv-postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    ports:
+      - "5432:5432"
