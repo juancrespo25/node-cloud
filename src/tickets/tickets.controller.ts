@@ -1,4 +1,5 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+import { Controller, Get, Post, Body, Param, Req } from '@nestjs/common';
 import { TicketsService } from './tickets.service';
 import { CreateTicketDto } from './dto/create-ticket.dto';
 
@@ -7,8 +8,12 @@ export class TicketsController {
   constructor(private readonly ticketsService: TicketsService) {}
 
   @Post()
-  async create(@Body() createTicketDto: CreateTicketDto) {
-    const ticketCode = await this.ticketsService.create(createTicketDto);
+  async create(@Body() createTicketDto: CreateTicketDto, @Req() request) {
+    const ticketCode = await this.ticketsService.create(
+      createTicketDto,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      request.user_email
+    );
     return {
       success: true,
       message: 'Ticket created successfully',

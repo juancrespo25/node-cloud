@@ -49,4 +49,14 @@ export class UsersService {
       throw new BadRequestException(e.message);
     }
   }
+
+  async validateEmail(email: string): Promise<Pick<User, 'password'> | null> {
+    try {
+      return await this.usersModel.findOne({ email }, { password: 1 }).exec();
+    } catch (e) {
+      this.logger.error(e);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      throw new BadRequestException(e.message);
+    }
+  }
 }
