@@ -3,18 +3,22 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from './schemas/user.schema';
-import bcrypt from 'bcrypt';
+import { CommonService } from '../common/common.service';
+import { USER_PREFIX } from '../common/constant';
 
 @Injectable()
 export class UsersService {
   private readonly logger = new Logger(UsersService.name);
-  constructor(@InjectModel('User') private readonly usersModel: Model<User>) {}
+  constructor(
+    @InjectModel('User') private readonly usersModel: Model<User>,
+    private readonly commonService: CommonService
+  ) {}
   async create(createUserDto: CreateUserDto): Promise<string> {
     try {
       const user = new this.usersModel({
         ...createUserDto,
-        code: this.generateCode('USER'),
-        password: await this.hashPassword(createUserDto.password),
+        code: this.commonService.generateCode(USER_PREFIX.USERS),
+        password: await this.commonService.hashPassword(createUserDto.password),
         created_user: 'admin@jcv.com', //TODO Agregar logica para la creacion del usuario.
       });
 
@@ -44,17 +48,5 @@ export class UsersService {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       throw new BadRequestException(e.message);
     }
-  }
-
-  //TODO Desacoplar logica de los metodos private
-  private generateCode(prefix: string): string {
-    return `${prefix}-${Math.floor(100000 + Math.random() * 900000).toString()}`;
-  }
-
-  private async hashPassword(password: string): Promise<string> {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-    const salt = await bcrypt.genSalt();
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-    return bcrypt.hash(password, salt);
   }
 }
