@@ -9,10 +9,15 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
+import { LoginService } from '../login/login.service';
+import { LoginDto } from '../login/dto/login.dto';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly loginService: LoginService
+  ) {}
 
   @Post()
   @UsePipes(new ValidationPipe({ whitelist: true }))
@@ -40,5 +45,15 @@ export class UsersController {
   @Get(':code')
   async findByCode(@Param('code') code: string) {
     return await this.usersService.findByCode(code);
+  }
+
+  @Post('/login')
+  async login(@Body() loginDto: LoginDto) {
+    const token = await this.loginService.login(loginDto);
+    return {
+      success: true,
+      message: 'Login successful',
+      token,
+    };
   }
 }

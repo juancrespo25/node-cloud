@@ -13,12 +13,15 @@ export class TicketsService {
     @InjectRepository(Ticket) private ticketsRepository: Repository<Ticket>,
     private readonly commonService: CommonService
   ) {}
-  async create(createTicketDto: CreateTicketDto): Promise<string> {
+  async create(
+    createTicketDto: CreateTicketDto,
+    email: string
+  ): Promise<string> {
     try {
       const ticketEntity = this.ticketsRepository.create({
         ...createTicketDto,
         code: this.commonService.generateCode(USER_PREFIX.TICKETS),
-        created_user: 'system',
+        created_user: email,
       });
 
       const ticket = await this.ticketsRepository.save(ticketEntity);
