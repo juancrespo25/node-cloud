@@ -3,18 +3,21 @@ import { CreateTicketDto } from './dto/create-ticket.dto';
 import { Ticket } from './entities/ticket.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { CommonService } from '../common/common.service';
+import { USER_PREFIX } from '../common/constant';
 
 @Injectable()
 export class TicketsService {
   private readonly logger: Logger = new Logger(TicketsService.name);
   constructor(
-    @InjectRepository(Ticket) private ticketsRepository: Repository<Ticket>
+    @InjectRepository(Ticket) private ticketsRepository: Repository<Ticket>,
+    private readonly commonService: CommonService
   ) {}
   async create(createTicketDto: CreateTicketDto): Promise<string> {
     try {
       const ticketEntity = this.ticketsRepository.create({
         ...createTicketDto,
-        code: this.generateCode('TCK'),
+        code: this.commonService.generateCode(USER_PREFIX.TICKETS),
         created_user: 'system',
       });
 
@@ -46,9 +49,4 @@ export class TicketsService {
       throw new BadRequestException(error);
     }
   }
-
-  private generateCode(prefix: string): string {
-    return `${prefix}-${Math.floor(100000 + Math.random() * 900000).toString()}`;
-  }
-  //TODO Agregar el filtro por codigo
 }

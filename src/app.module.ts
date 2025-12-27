@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { UsersModule } from './users/users.module';
 import { TicketsModule } from './tickets/tickets.module';
+import { CommonService } from './common/common.service';
 
 @Module({
   imports: [
@@ -22,6 +23,6 @@ import { TicketsModule } from './tickets/tickets.module';
     }),
   ],
   controllers: [],
-  providers: [],
+  providers: [CommonService],
 })
 export class AppModule {}
