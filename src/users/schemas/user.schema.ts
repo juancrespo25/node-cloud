@@ -8,7 +8,6 @@ export type UserDocument = User & Document;
 export class User {
   @Prop({
     type: String,
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     default: uuidv4,
     select: false,
   })

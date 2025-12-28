@@ -1,6 +1,8 @@
 import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { GraphQLModule } from '@nestjs/graphql';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 
 import { UsersModule } from './users/users.module';
 import { TicketsModule } from './tickets/tickets.module';
@@ -25,6 +27,11 @@ import { TicketsController } from './tickets/tickets.controller';
       synchronize: true, //* Solo debe de ser true en un ambiente controlado, de pruebas o local
     }),
     LoginModule,
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
+      playground: true,
+      autoSchemaFile: true, //* Solo en un entorno controlado (DEV)
+    }),
   ],
   controllers: [],
   providers: [CommonService],
