@@ -2,7 +2,8 @@ import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { GraphQLModule } from '@nestjs/graphql';
-import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { ApolloDriverConfig } from '@nestjs/apollo';
+import { ConfigModule } from '@nestjs/config';
 
 import { UsersModule } from './users/users.module';
 import { TicketsModule } from './tickets/tickets.module';
@@ -10,27 +11,21 @@ import { CommonService } from './common/common.service';
 import { LoginModule } from './login/login.module';
 import { LoginMiddleware } from './login/login.middleware';
 import { TicketsController } from './tickets/tickets.controller';
+import { MongoConfig } from './config/db/mongo.config';
+import { GraphQLConfig } from './config/graphql/graphql.config';
+import { PostgresConfig } from './config/db/postgres.config';
 
 @Module({
   imports: [
     UsersModule,
     TicketsModule,
-    MongooseModule.forRoot('mongodb://localhost:27017/tecypport'),
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      password: 'postgres',
-      database: 'postgres',
-      autoLoadEntities: true, //* Carga automaticamente las entidades solo en local
-      synchronize: true, //* Solo debe de ser true en un ambiente controlado, de pruebas o local
-    }),
+    MongooseModule.forRoot(MongoConfig),
+    TypeOrmModule.forRoot(PostgresConfig),
     LoginModule,
-    GraphQLModule.forRoot<ApolloDriverConfig>({
-      driver: ApolloDriver,
-      playground: true,
-      autoSchemaFile: true, //* Solo en un entorno controlado (DEV)
+    GraphQLModule.forRoot<ApolloDriverConfig>(GraphQLConfig),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: `.env.${process.env.NODE_ENV || 'local'}`,
     }),
   ],
   controllers: [],

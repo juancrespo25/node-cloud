@@ -4,7 +4,7 @@ export class CreateTicketDto {
   @IsString()
   @IsNotEmpty()
   @MinLength(5)
-  @MaxLength(20)
+  @MaxLength(15)
   title: string;
 
   @IsString()
