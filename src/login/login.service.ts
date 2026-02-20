@@ -32,7 +32,7 @@ export class LoginService {
       //* 3. JWT para el login
       const payload = {
         email,
-        role: 'ADMIN',
+        role: user.role,
       };
 
       return await this.jwtService.signAsync(payload);

@@ -26,8 +26,7 @@ export class UsersService {
       return result.code;
     } catch (e) {
       this.logger.error(e);
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      throw new BadRequestException(e.message);
+      throw new BadRequestException((e as Error).message);
     }
   }
 
@@ -36,7 +35,7 @@ export class UsersService {
       return await this.usersModel.find().exec();
     } catch (e) {
       this.logger.error(e);
-      throw new BadRequestException(e);
+      throw new BadRequestException((e as Error).message);
     }
   }
 
@@ -45,18 +44,22 @@ export class UsersService {
       return await this.usersModel.findOne({ code }).exec();
     } catch (e) {
       this.logger.error(e);
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      throw new BadRequestException(e.message);
+
+      throw new BadRequestException((e as Error).message);
     }
   }
 
-  async validateEmail(email: string): Promise<Pick<User, 'password'> | null> {
+  async validateEmail(
+    email: string
+  ): Promise<Pick<User, 'password' | 'role'> | null> {
     try {
-      return await this.usersModel.findOne({ email }, { password: 1 }).exec();
+      return await this.usersModel
+        .findOne({ email }, { password: 1, role: 1 })
+        .exec();
     } catch (e) {
       this.logger.error(e);
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      throw new BadRequestException(e.message);
+
+      throw new BadRequestException((e as Error).message);
     }
   }
 }

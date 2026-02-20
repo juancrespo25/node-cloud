@@ -1,19 +1,25 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { Controller, Get, Post, Body, Param, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, UseGuards } from '@nestjs/common';
 import { TicketsService } from './tickets.service';
 import { CreateTicketDto } from './dto/create-ticket.dto';
+import { RolesGuard } from '../roles/roles.guard';
+import { UserRole } from '../roles/types/role.type';
+import { Roles } from '../roles/roles.decorator';
+import { EmailUser } from '../common/common.decorator';
 
 @Controller('tickets')
+@UseGuards(RolesGuard)
 export class TicketsController {
   constructor(private readonly ticketsService: TicketsService) {}
 
   @Post()
-  async create(@Body() createTicketDto: CreateTicketDto, @Req() request) {
-    const ticketCode = await this.ticketsService.create(
-      createTicketDto,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      request.user_email
-    );
+  @Roles(UserRole.WRITE)
+  async create(
+    @Body() createTicketDto: CreateTicketDto,
+    @EmailUser() email: string
+  ) {
+    const ticketCode = await this.ticketsService.create(createTicketDto, email);
+
+    console.log(ticketCode);
     return {
       success: true,
       message: 'Ticket created successfully',
@@ -22,6 +28,7 @@ export class TicketsController {
   }
 
   @Get()
+  @Roles(UserRole.READ, UserRole.WRITE)
   async findAll() {
     const tickets = await this.ticketsService.findAll();
     return {
@@ -32,6 +39,7 @@ export class TicketsController {
   }
 
   @Get(':code')
+  @Roles(UserRole.READ, UserRole.WRITE)
   async findByCode(@Param('code') code: string) {
     const ticket = await this.ticketsService.findByCode(code);
     return {
