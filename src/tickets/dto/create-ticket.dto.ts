@@ -5,10 +5,10 @@ export class CreateTicketDto {
   @IsNotEmpty()
   @MinLength(5)
   @MaxLength(15)
-  title: string;
+  title!: string;
 
   @IsString()
   @IsNotEmpty()
   @MaxLength(100)
-  description: string;
+  description!: string;
 }

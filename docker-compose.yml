@@ -3,7 +3,7 @@ services:
     image: mongo:latest
     container_name: jcv-mongodb
     ports:
-      - "27017:27017"
+      - "27018:27017"
   postgres:
     image: postgres:latest
     container_name: jcv-postgres
