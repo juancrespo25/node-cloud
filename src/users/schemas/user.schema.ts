@@ -29,7 +29,12 @@ export class User {
   @Prop({ unique: true })
   code!: string;
 
-  @Prop({ required: true, enum: UserRole, default: 'READ' })
+  @Prop({
+    required: true,
+    enum: UserRole,
+    default: UserRole.READ,
+    type: String,
+  })
   role!: UserRole;
 
   //campos de auditoria
