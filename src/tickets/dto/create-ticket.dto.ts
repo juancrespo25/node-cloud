@@ -1,4 +1,12 @@
-import { IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
+import { TicketLevel } from '../type/tickets.type';
 
 export class CreateTicketDto {
   @IsString()
@@ -11,4 +19,8 @@ export class CreateTicketDto {
   @IsNotEmpty()
   @MaxLength(100)
   description!: string;
+
+  @IsEnum(TicketLevel)
+  @IsOptional()
+  level!: string;
 }

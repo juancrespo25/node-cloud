@@ -6,38 +6,38 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { TicketStatus } from '../type/tickets.type';
+import { TicketLevel, TicketStatus } from '../type/tickets.type';
 
 @Entity()
 export class Ticket {
   @PrimaryGeneratedColumn('uuid')
-  id: number;
+  id!: number;
 
   @Column({
     type: 'varchar',
     length: 15,
     nullable: false,
   })
-  title: string;
+  title!: string;
 
   @Column({
     type: 'varchar',
     length: 100,
   })
-  description: string;
+  description!: string;
 
   @Column({
     type: 'enum',
     enum: TicketStatus,
     default: TicketStatus.PENDING,
   })
-  status: string;
+  status!: string;
 
   @Column({
     type: 'varchar',
     unique: true,
   })
-  code: string;
+  code!: string;
 
   @CreateDateColumn({
     default: () => 'CURRENT_TIMESTAMP',
@@ -71,5 +71,12 @@ export class Ticket {
   @DeleteDateColumn({
     select: false,
   })
-  deleted_at: Date; // * Captura la fecha de eliminacion del registro, pero no lo borra, solo lo oculta
+  deleted_at!: Date; // * Captura la fecha de eliminacion del registro, pero no lo borra, solo lo oculta
+
+  @Column({
+    type: 'enum',
+    enum: TicketLevel,
+    default: TicketLevel.LOW,
+  })
+  level!: string;
 }

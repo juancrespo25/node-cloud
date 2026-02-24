@@ -14,6 +14,7 @@ import { TicketsController } from './tickets/tickets.controller';
 import { MongoConfig } from './config/db/mongo.config';
 import { GraphQLConfig } from './config/graphql/graphql.config';
 import { PostgresConfig } from './config/db/postgres.config';
+import { KafkaModule } from './kafka/kafka.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { PostgresConfig } from './config/db/postgres.config';
       isGlobal: true,
       envFilePath: `.env.${process.env.NODE_ENV || 'local'}`,
     }),
+    KafkaModule,
   ],
   controllers: [],
   providers: [CommonService],

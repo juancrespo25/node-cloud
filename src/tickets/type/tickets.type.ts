@@ -4,3 +4,9 @@ export enum TicketStatus {
   RESOLVED = 'Resolved',
   CLOSED = 'Closed',
 }
+
+export enum TicketLevel {
+  LOW = 'Low',
+  MEDIUM = 'Medium',
+  HIGH = 'High',
+}
